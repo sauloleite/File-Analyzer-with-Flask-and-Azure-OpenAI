@@ -1,0 +1,176 @@
+<!doctype html>
+<head>
+  <title>Analisador de arquivos</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <style>
+    @keyframes blink {
+      from, to { border-color: transparent; }
+      50% { border-color: black; }
+    }
+    .typing-text {
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 3px solid;
+      font-size: 1rem;
+      animation: blink .75s step-end infinite;
+    }
+    #login-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    #login-popup input {
+      margin: 10px 0;
+    }
+    #overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+  </style>
+</head>
+<html>
+  <body>
+    <div id="overlay"></div>
+    <div id="login-popup">
+      <h2>Login</h2>
+      <form id="login-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Autenticar</button>
+      </form>
+    </div>
+    <main>
+      <div class="px-4 py-3 my-2 text-center">
+        <img class="d-block mx-auto mb-4" src="{{ url_for('static', filename='images/azure-icon.svg') }}" alt="Azure Logo" width="100" height="100"/>
+        <h1 class="display-6 fw-bold text-primary">Criador de resumos, análises e descrições de arquivos</h1>       
+      </div>
+      <form id="upload-form" method="post" action="{{ url_for('result') }}" enctype="multipart/form-data">
+        <div class="col-md-6 mx-auto text-center">
+          <label for="file" class="form-label fw-bold fs-5">Bem-vindo(a), selecione o arquivo que você gostaria de usar:</label>
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center align-items-center my-1">
+            <input type="file" class="form-control" id="file" name="file" accept=".docx,.pdf,.txt,.pptx,.png,.jpg,.jpeg" style="max-width: 400px;" onchange="validateFile()">
+        </div>    
+          <div class="d-grid gap-2 d-sm-flex justify-content-sm-center my-2">
+            <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Enviar arquivo</button>
+          </div>       
+        </div>
+      </form>
+      <div id="loading" style="display: none;" class="col-md-8 mx-auto text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <br>
+        <div id="typing-container"></div>
+      </div>
+    </main>    
+  </body>
+  <script>
+    function validateFile() {
+      var fileName = document.getElementById("file").value;
+      var idxDot = fileName.lastIndexOf(".") + 1;
+      var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+      if (["docx", "pdf", "txt", "pptx", "png", "jpg", "jpeg"].indexOf(extFile) < 0) {
+          alert("Somente arquivos .docx, .pdf, .txt e .pptx são aceitos!");
+          document.getElementById("file").value = ""; // Limpa o campo de arquivo
+      }
+    }
+    document.getElementById('upload-form').addEventListener('submit', function(event) {
+        var file = document.getElementById("file").value;
+        if (file == "") {
+            alert("Por favor, selecione um arquivo antes de enviar.");
+            event.preventDefault(); // Impede o envio do formulário
+        } else {
+            document.getElementById('loading').style.display = 'block';
+            startTyping();
+        }
+    });
+
+    function startTyping() {
+      const lines = [
+        "Criando Resumo... A criação pode levar alguns segundos. Aguarde, por favor.",
+        "Equanto isso vamos mergulhar no mundo dos LLMs! Prepare-se para se surpreender com as incríveis capacidades desses modelos de linguagem de última geração.",
+        "Descubra os segredos dos LLMs! Explore as mentes brilhantes por trás do GPT, Gemini e LaMDA, e como eles estão revolucionando a forma como interagimos com a linguagem.",
+        "Sabia que os LLMs não são apenas máquinas? Eles são capazes de aprender, criar e até mesmo ter conversas intrigantes!",
+        "LLMs como GPT, Gemini e LaMDA são treinados em conjuntos de dados massivos de texto e código, permitindo que eles realizem tarefas complexas com maestria.",
+        "Esses modelos podem criar resumos, traduzir idiomas, escrever diferentes tipos de conteúdo criativo e responder às suas perguntas de forma informativa, mesmo que sejam abertas, desafiadoras ou estranhas.",
+        "Os LLMs ainda estão em desenvolvimento, mas já estão impactando áreas como educação, saúde e atendimento ao cliente. Eles têm o potencial de transformar a maneira como vivemos e trabalhamos.",
+        "Prepare-se para se encantar com o futuro da linguagem! Os LLMs estão apenas começando a mostrar o que podem fazer, e as possibilidades são infinitas.",
+        "GPT: O GPT, da OpenAI, é um dos LLMs mais famosos e foi fundamental para impulsionar o desenvolvimento da tecnologia.",
+        "Gemini: Desenvolvido pelo Google AI, o Gemini se destaca por sua capacidade de realizar tarefas complexas que exigem raciocínio e bom senso.",
+        "LaMDA: Criado pelo Google AI, o LaMDA é conhecido por sua capacidade de gerar diálogos fluidos e naturais, tornando as interações com máquinas mais intuitivas e agradáveis.",
+        "LLMs e o futuro: O futuro dos LLMs é promissor e cheio de possibilidades. Eles têm o potencial de revolucionar diversos setores da sociedade, desde a forma como trabalhamos até a maneira como nos comunicamos e interagimos com o mundo ao nosso redor.",
+      ];
+
+      let container = document.getElementById('typing-container');
+      let delay = 0;
+
+      lines.forEach((line, index) => {
+        let lineElement = document.createElement('div');
+        lineElement.classList.add('typing-text');
+        container.appendChild(lineElement);
+        typeLine(line, lineElement, delay);
+        delay += line.length * 50; // Adjust timing as needed
+      });
+    }
+
+    function typeLine(line, element, delay) {
+      setTimeout(() => {
+        let i = 0;
+        let interval = setInterval(() => {
+          if (i < line.length) {
+            element.innerHTML += line.charAt(i);
+            i++;
+          } else {
+            clearInterval(interval);
+            element.classList.remove('typing-text');
+          }
+        }, 50); // Typing speed (ms per character)
+      }, delay);
+    }
+
+    // Popup Login Logic
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!localStorage.getItem('isLoggedIn')) {
+        showLoginPopup();
+      }
+    });
+
+    function showLoginPopup() {
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('login-popup').style.display = 'block';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const users = {
+        'admin': 'admin321',
+      };
+
+      if (users[username] === password) {
+        localStorage.setItem('isLoggedIn', 'true');
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('login-popup').style.display = 'none';
+      } else {
+        alert('Login ou senha incorretos.');
+      }
+    });
+  </script>
+</html>

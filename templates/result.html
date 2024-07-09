@@ -1,0 +1,60 @@
+<!doctype html>
+<head>
+    <title>Analisador de arquivos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        .formatted-text {
+            text-align: left;
+            white-space: pre-wrap; /* Preserva as quebras de linha */
+            margin: 100px;
+        }
+    </style>
+</head>
+<html>
+   <body>
+     <main>
+        <div class="px-4 py-3 my-2 text-center">
+            <img class="d-block mx-auto mb-4" src="{{ url_for('static', filename='images/azure-icon.svg') }}" alt="Azure Logo" width="100" height="100"/>
+            <h1 class="display-6 fw-bold">Resultado:</h1>
+            
+            {% if image_base64 %}
+                <img src="data:image/jpeg;base64,{{ image_base64 }}" alt="Imagem carregada" class="img-fluid mt-3 mb-3"/>
+            {% endif %}
+            
+            <div class="fs-5 formatted-text" id="myText">{{ txt | safe }}</div>
+            
+            <div id="alert" class="alert alert-success" style="display: none;">
+              Texto copiado!
+            </div>
+            <button onclick="myFunction()" class="btn btn-primary btn-lg px-4 gap-3">Copiar texto</button>
+            <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg px-4 gap-3">Voltar</a>
+          </div>
+     </main>      
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+     <script>
+        function myFunction() {
+            /* Obtém o texto */
+            var text = document.getElementById("myText").innerText;
+            /* Cria um elemento textarea */
+            var textarea = document.createElement("textarea");
+            /* Define o valor do textarea para o texto */
+            textarea.value = text;
+            /* Adiciona o textarea ao corpo do documento */
+            document.body.appendChild(textarea);
+            /* Seleciona o texto do textarea */
+            textarea.select();
+            /* Copia o texto */
+            document.execCommand("copy");
+            /* Remove o textarea do corpo do documento */
+            document.body.removeChild(textarea);
+            /* Mostra o alerta */
+            $("#alert").fadeIn();
+            /* Faz o alerta desaparecer após 3 segundos */
+            setTimeout(function() {
+                $("#alert").fadeOut();
+            }, 3000);
+        }
+     </script>
+   </body>
+</html>
