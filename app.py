@@ -77,7 +77,7 @@ def upload_image_to_imgbb(image_bytes):
 # Função para descrever imagem usando OpenAI
 def describe_image(image_url):
     response = client.chat.completions.create(
-        model="insira_aqui_o_modelo_da_openai",
+        model="insira_aqui_a_implementação_do_modelo_da_openai",
         messages=[
             { "role": "system", "content": "Você é um excelente assistente para descrever imagens." },
             { "role": "user", "content": [  
@@ -163,7 +163,7 @@ def result():
             # Extrai o prompt do arquivo "prompts.txt" para a OpenAI
             prompt = extractTextTxts(open('prompts.txt', 'rb'))
             response = client.chat.completions.create(
-                model="insira_aqui_o_modelo_da_openai",
+                model="insira_aqui_a_implementação_do_modelo_da_openai",
                 messages=[
                     {"role": "system", "content": prompt},
                     {"role": "user", "content": final_content}

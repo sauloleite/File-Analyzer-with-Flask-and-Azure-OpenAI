@@ -65,7 +65,7 @@ def upload_image_to_imgbb(image_bytes):
 Insira a nome da implantação do modelo da openAI nestes trechos do código app.py:
 ```python
 response = client.chat.completions.create(
-        model="insira_aqui_o_modelo_da_openai"
+        model="insira_aqui_a_implementação_do_modelo_da_openai"
 ```
 ## Executando a Aplicação
 
