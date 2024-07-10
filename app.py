@@ -12,7 +12,7 @@ from pptx import Presentation
 client = AzureOpenAI(
     azure_endpoint="insira_aqui_o_endpoint_da_sua_chave_azure",
     api_key='insira_aqui_a_sua_chave_azure',
-    api_version="insira_aqui_a_versao_da_api"
+    api_version="insira_aqui_a_versao_da_api" #"2024-02-01"
 )
 
 # Função para extrair texto e imagens de arquivos DOCX

@@ -53,7 +53,7 @@ Insira no código as chaves da OpenAI e da ImgBB e o endpoint da sua chave Azure
 client = AzureOpenAI(
     azure_endpoint="insira_aqui_o_endpoint_da_sua_chave_azure",
     api_key='insira_aqui_a_sua_chave_azure',
-    api_version="insira_aqui_a_versao_da_api"
+    api_version="insira_aqui_a_versao_da_api" #Como sugestão, use: "2024-02-01"
 )
 ```
 Insira a API Key de imgbb neste trecho do código app.py:
@@ -91,7 +91,7 @@ Senha: admin321
 4. Clone sua aplicação com comando
   ```bash
    git clone link_do_seu_repositório_aqui.git
-   cd seu-repositorio
+   cd nome_do_seu_repositório
   ```
 5. Execute este comando:
   ```bash
@@ -110,7 +110,7 @@ az webapp up --name nome_do_seu_webapp_aqui
 1. Envio de Arquivos: Usuários podem enviar arquivos .docx, .pdf, .txt, .pptx, .png, .jpg, .jpeg para análise.
 2. Extração de Conteúdo: Extração de texto e imagens dos arquivos enviados.
 3. Processamento com OpenAI: Utiliza a API Azure OpenAI para gerar resumos, análises e descrições do conteúdo extraído.
-4. Hospedagem de Imagens: Imagens são hospedadas no ImgBB e descritas utilizando a OpenAI.
+4. Hospedagem de Imagens: Imagens são hospedadas no ImgBB temporariamente e descritas utilizando a OpenAI.
 5. Interface Interativa: Desenvolvida com HTML, CSS, JS e Bootstrap.
 
 ### Contato
