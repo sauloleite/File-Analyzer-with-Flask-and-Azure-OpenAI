@@ -18,7 +18,7 @@ Esta aplicação é um WebApp que permite aos usuários enviar arquivos para cri
    - HTML, CSS, JS, Bootstrap: Tecnologias para criar e estilizar a interface do usuário.
    - Python: Linguagem para desenvolver a lógica do aplicativo.
    - Flask: Framework usado para estruturar o aplicativo Web e fornecer os recursos básicos.
-   - API Azure OpenAI: Processa os textos extraídos utilizando o modelo de linguagem GPT-4 para gerar resumos, análises e descrições.
+   - API Azure OpenAI: Processa os textos extraídos utilizando o modelo de linguagem GPT-4o para gerar resumos, análises e descrições.
 
 ### Passo a Passo do Funcionamento
 
