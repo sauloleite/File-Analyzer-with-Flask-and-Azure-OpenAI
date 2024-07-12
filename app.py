@@ -197,8 +197,3 @@ def handle_exception(e):
 if __name__ == '__main__':
     app.run()
 
-#Antes de realizar os ajustes do seu código: realize o comando: pip install -r requirements.txt
-#Insira no código as chaves da OpenAI e da ImgBB e o endpoint da sua chave Azure
-#Para executar a aplicação, execute o seguinte comando no terminal: flask run
-#Ao execultar a aplicação pela primeira vez é solicitada uma autenticação que é login:admin e senha:admin321
-#Qualquer dúvida, mande um email para sjoldeveloper@gmail.com
