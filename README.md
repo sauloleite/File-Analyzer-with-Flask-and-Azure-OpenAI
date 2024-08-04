@@ -1,143 +1,147 @@
-# Analisador de Arquivos com Flask e Azure OpenAI
+# File Analyzer with Flask and Azure OpenAI
 
-Esta aplicação é um WebApp que permite aos usuários enviar arquivos para criação de resumos, análises e descrições utilizando os serviços da Azure, incluindo a API Azure OpenAI.
+This application is a WebApp that allows users to upload various types of files—such as documents, presentations, and images—for creating summaries, analyses, and descriptions using Azure services, including the Azure OpenAI API. It utilizes the multimodal capabilities of the GPT-4 model, enabling it to process and understand both text and images. This functionality makes it highly effective in handling diverse file formats and extracting meaningful insights from mixed content, thereby enhancing the overall utility and flexibility of the application in managing complex data inputs.
 
-## Arquitetura
 
-### Partes da Arquitetura
+## Architecture
 
-1. **Usuários:**
-   - Enviam arquivos através do navegador (Browser).
+### Architecture Components
 
-2. **Recurso em Azure:**
-   - **Resource Group:** Agrupamento dos serviços utilizados na arquitetura.
-   - **App Service Plan:** Fornece a base para o funcionamento do aplicativo, disponibilizando os recursos subjacentes necessários.
-   - **App Service Web App:** Hospeda o aplicativo Web Python em um ambiente de servidor Linux.
+1. **Users:**
+   - Upload files through the browser.
 
-3. **Tecnologias Utilizadas:**
-   - HTML, CSS, JS, Bootstrap: Tecnologias para criar e estilizar a interface do usuário.
-   - Python: Linguagem para desenvolver a lógica do aplicativo.
-   - Flask: Framework usado para estruturar o aplicativo Web e fornecer os recursos básicos.
-   - API Azure OpenAI: Processa os textos extraídos utilizando o modelo de linguagem GPT-4o para gerar resumos, análises e descrições.
+2. **Azure Resource:**
+   - **Resource Group:** Grouping of services used in the architecture.
+   - **App Service Plan:** Provides the foundation for the application's operation, offering the necessary underlying resources.
+   - **App Service Web App:** Hosts the Python web application in a Linux server environment.
 
-### Passo a Passo do Funcionamento
+3. **Technologies Used:**
+   - HTML, CSS, JS, Bootstrap: Technologies to create and style the user interface.
+   - Python: Language for developing the application logic.
+   - Flask: Framework used to structure the web application and provide basic features.
+   - Azure OpenAI API: Processes the extracted texts using the GPT-4 language model to generate summaries, analyses, and descriptions.
 
-1. Usuários enviam arquivos através do navegador.
-2. O App Service Plan oferece infraestrutura de suporte ao WebApp.
-3. O WebApp, hospedado no App Service Web App, utiliza Flask para gerenciar a aplicação em Python.
-4. A interface do aplicativo é desenvolvida com HTML, CSS, JS e Bootstrap, proporcionando uma experiência interativa e bem estruturada ao usuário.
-5. O backend em Python define a lógica do aplicativo e realiza a extração de texto dos arquivos enviados.
-6. O texto extraído é processado pela API Azure OpenAI, que utiliza o GPT-4 para gerar os resumos, análises e descrições.
+### Step-by-Step Operation
 
-## Configuração do Projeto
+1. Users upload files through the browser.
+2. The App Service Plan provides infrastructure support for the WebApp.
+3. The WebApp, hosted on the App Service Web App, uses Flask to manage the Python application.
+4. The application interface is developed with HTML, CSS, JS, and Bootstrap, providing an interactive and well-structured experience to the user.
+5. The Python backend defines the application logic and performs text extraction from the uploaded files.
+6. The extracted text is processed by the Azure OpenAI API, which uses GPT-4 to generate the summaries, analyses, and descriptions.
 
-### Pré-requisitos
+## Project Setup
+
+### Prerequisites
 
 - Python 3.6+
-- Conta na Azure com a API Azure OpenAI habilitada
-- Conta no ImgBB para hospedagem de imagens
+- Azure account with Azure OpenAI API enabled
+- ImgBB account for image hosting
 
-### Instalação
+### Installation
 
-1. Clone o repositório:
+1. Clone the repository:
    ```bash
    git clone https://github.com/sauloleite/File-Analyzer-with-Flask-and-Azure-OpenAI.git
-   cd seu-repositorio
-2. Instale as dependências:
+   cd your-repository
+
+2. Install the dependencies:
    ```bash
    pip install -r requirements.txt
-### Configuração das Chaves, Endpoints e Implatações
-Obtenção das Chaves e Pontos de Extremidade no Azure AI Services | OpenAI:
-1. Faça login no portal da Azure: portal.azure.com.
-2. No painel de navegação esquerdo, clique em "Criar um recurso" e pesquise por "OpenAI".
-3. Selecione "Azure OpenAI" e clique em "Criar".
-4. Escolha a assinatura, o grupo de recursos e a região desejada. Dê um nome ao seu recurso OpenAI e clique em "Revisar + criar".
-5. Após a criação, vá para o recurso OpenAI que você criou.
-6. No painel de navegação esquerdo, clique em "Chaves e Endpoints".
-7. Copie o valor da "Chave" e o "Endpoint" e insira-os no código app.py da seguinte forma:
+
+### Configuration of Keys, Endpoints, and Deployments
+Obtaining Keys and Endpoints in Azure AI Services | OpenAI:
+1. Log in to the Azure portal: portal.azure.com.
+2. In the left navigation panel, click on "Create a resource" and search for "OpenAI".
+3. Select "Azure OpenAI" and click "Create".
+4. Choose the subscription, resource group, and desired region. Name your OpenAI resource and click "Review + create".
+5. After creation, go to the OpenAI resource you created.
+6. In the left navigation panel, click on "Keys and Endpoints".
+7. Copy the "Key" and "Endpoint" values and insert them into the app.py code as follows:
    ```python
-   # Configuração da API da OpenAI
+   # OpenAI API Configuration
    client = AzureOpenAI(
-       azure_endpoint="insira_aqui_o_endpoint_da_sua_chave_azure",
-       api_key='insira_aqui_a_sua_chave_azure',
-       api_version="insira_aqui_a_versao_da_api" #Como sugestão, use: "2024-02-01"
+       azure_endpoint="insert_here_your_azure_endpoint",
+       api_key='insert_here_your_azure_key',
+       api_version="insert_here_the_api_version" # As a suggestion, use: "2024-02-01"
    )
    ```
-Obtenção da API Key do ImgBB e inserção no código:
-1. Acesse o site do ImgBB: https://imgbb.com/.
-2. Se ainda não tiver uma conta, crie uma. Caso contrário, faça login.
-3. No canto superior direito, clique em seu nome de usuário e depois em "Settings".
-4. No menu à esquerda, clique em "API".
-5. Clique em "Add API key".
-6. Dê um nome à sua chave API e clique em "Create".
-7. Após a criação, copie o valor da sua API Key.
-8. Abra o arquivo app.py no seu editor de código.
-9. Encontre o trecho de código que define a função upload_image_to_imgbb e substitua 'insira_aqui_a_sua_chave_imgbb' pela sua chave API que você copiou do ImgBB:
+Obtaining the ImgBB API Key and inserting it into the code:
+1. Visit the ImgBB website: https://imgbb.com/.
+2. If you do not have an account, create one. Otherwise, log in.
+3. In the top right corner, click on your username and then on "Settings".
+4. In the left menu, click on "API".
+5. Click on "Add API key".
+6. Name your API key and click "Create".
+7. After creation, copy the value of your API Key.
+8. Open the app.py file in your code editor.
+9. Find the code snippet that defines the function upload_image_to_imgbb and replace 'insert_here_your_imgbb_key' with your ImgBB API Key that you copied:
    ```python
    def upload_image_to_imgbb(image_bytes):
-       imgbb_api_key = 'insira_aqui_a_sua_chave_imgbb'
+       imgbb_api_key = 'insert_here_your_imgbb_key'
    ```
 
-Implantação do Modelo no Estúdio do OpenAI do Azure:
-1. No portal da Azure, navegue até o recurso Azure OpenAI que você criou.
-2. No painel de navegação esquerdo, clique em "Modelos".
-3. Clique em "Implantar um modelo".
-4. Selecione o modelo que deseja implantar (por exemplo, GPT-4).
-5. Dê um nome à sua implantação e clique em "Criar".
-6. Após a implantação, vá para a seção "Implantações" e copie o nome da implantação.
-7. Insira o nome da implantação no código app.py da seguinte forma:
+Deploying the Model in Azure OpenAI Studio:
+1. In the Azure portal, navigate to the Azure OpenAI resource you created.
+2. In the left navigation panel, click on "Models".
+3. Click "Deploy a model".
+4. Select the model you wish to deploy (for example, GPT-4).
+5. Name your deployment and click "Create".
+6. After the deployment, go to the "Deployments" section and copy the name of the deployment.
+7. Insert the deployment name into the app.py code as follows:
    ```python
    response = client.chat.completions.create(
-           model="insira_aqui_a_implementação_do_modelo_da_openai"
+           model="insert_here_your_openai_model_deployment_name"
    ```
-8. Salve as alterações do seu projeto
+8. Save the changes to your project
    
-## Executando a Aplicação
+## Running the Application
 
-Para iniciar o servidor Flask, execute:
+To start the Flask server, execute:
 
 ```bash
 flask run
 ```
 
-Acesse o aplicativo no navegador através do endereço:
+Access the application in the browser at:
 ```bash
 http://127.0.0.1:5000/
 ```
 
-Na primeira execução, será solicitada uma autenticação:
+On the first execution, authentication will be requested:
 Login: admin
-Senha: admin321
+Password: admin321
 
-## Subindo aplicação no Azure
-1. Depois de realizar as alterações, crie um repositório da sua aplicação, no github, por exemplo
-2. Realize o login no portal.azure.com
-3. Abra o "Azure Cloud Shell"
-4. Clone sua aplicação com comando
+## Deploying Application on Azure
+1. After making changes, create a repository of your application, on GitHub, for example.
+2. Log in to portal.azure.com.
+3. Open the "Azure Cloud Shell".
+4. Clone your application with the command:
      ```bash
-      git clone link_do_seu_repositório_aqui.git
-      cd nome_do_seu_repositório
+      git clone your_repository_link_here.git
+      cd your_repository_name
      ```
-5. Execute este comando:
+5. Execute this command:
      ```bash
-      az webapp up --name nome_do_seu_webapp_aqui
+      az webapp up --name your_webapp_name_here
      ```
-6. Clique no link gerado e sua aplicação estará pronta para ser consumida
+6. Click on the generated link and your application will be ready to be consumed.
 
    
-### Estrutura dos Arquivos
-- app.py: Script principal da aplicação Flask.
-- templates/: Contém os arquivos HTML (index.html e result.html).
-- static/: Contém arquivos estáticos como CSS e imagens.
+### File Structure
+- app.py: Main Flask application script.
+- templates/: Contains HTML files (index.html and result.html).
+- static/: Contains static files such as CSS and images.
 
-### Funcionalidades
+### Features
 
-1. Envio de Arquivos: Usuários podem enviar arquivos .docx, .pdf, .txt, .pptx, .png, .jpg, .jpeg para análise.
-2. Extração de Conteúdo: Extração de texto e imagens dos arquivos enviados.
-3. Processamento com OpenAI: Utiliza a API Azure OpenAI para gerar resumos, análises e descrições do conteúdo extraído.
-4. Hospedagem de Imagens: Imagens são hospedadas no ImgBB temporariamente e descritas utilizando a OpenAI.
-5. Interface Interativa: Desenvolvida com HTML, CSS, JS e Bootstrap.
+1. File Upload: Users can upload .docx, .pdf, .txt, .pptx, .png, .jpg, .jpeg files for analysis.
+2. Content Extraction: Extracts text and images from the uploaded files.
+3. Processing with OpenAI: Uses the Azure OpenAI API to generate summaries, analyses, and descriptions of the extracted content.
+4. Image Hosting: Images are temporarily hosted on ImgBB and described using OpenAI.
+5. Interactive Interface: Developed with HTML, CSS, JS, and Bootstrap.
 
-### Contato
-Para dúvidas ou suporte, entre em contato pelo email: sjoldeveloper@gmail.com
+### Contact
+For questions or support, contact by email: sjoldeveloper@gmail.com
+
 
