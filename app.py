@@ -8,58 +8,58 @@ from unidecode import unidecode
 import fitz  # PyMuPDF
 from pptx import Presentation
 
-# Configuração da API da OpenAI
+# OpenAI API configuration
 client = AzureOpenAI(
-    azure_endpoint="insira_aqui_o_endpoint_da_sua_chave_azure",
-    api_key='insira_aqui_a_sua_chave_azure',
-    api_version="insira_aqui_a_versao_da_api" #"2024-02-01"
+    azure_endpoint="insert_your_azure_key_endpoint_here",
+    api_key='insert_your_azure_key_here',
+    api_version="insert_your_api_version_here" #"2024-02-01"
 )
 
-# Função para extrair texto e imagens de arquivos DOCX
-def extractContentDocs(arquivo):
-    documento = Document(arquivo)
+# Function to extract text and images from DOCX files
+def extractContentDocs(file):
+    document = Document(file)
     content = []
-    for para in documento.paragraphs:
-        content.append(para.text)  # Adiciona o texto de cada parágrafo ao conteúdo
+    for para in document.paragraphs:
+        content.append(para.text)  # Adds the text of each paragraph to the content
     
-    for rel in documento.part.rels.values():
+    for rel in document.part.rels.values():
         if "image" in rel.target_ref:
-            image = rel.target_part.blob  # Adiciona as imagens ao conteúdo
+            image = rel.target_part.blob  # Adds images to the content
             content.append(image)
     
     return content
 
-# Função para extrair texto e imagens de arquivos PDF
-def extractContentPdf(arquivo):
-    documento = fitz.open(stream=arquivo.read(), filetype="pdf")
+# Function to extract text and images from PDF files
+def extractContentPdf(file):
+    document = fitz.open(stream=file.read(), filetype="pdf")
     content = []
-    for pagina in documento:
-        text = pagina.get_text()  # Adiciona o texto de cada página ao conteúdo
+    for page in document:
+        text = page.get_text()  # Adds the text of each page to the content
         content.append(text)
-        for img in pagina.get_images(full=True):
+        for img in page.get_images(full=True):
             xref = img[0]
-            base_image = documento.extract_image(xref)
-            image_bytes = base_image["image"]  # Adiciona as imagens ao conteúdo
+            base_image = document.extract_image(xref)
+            image_bytes = base_image["image"]  # Adds images to the content
             content.append(image_bytes)
     return content
 
-# Função para extrair texto e imagens de arquivos PPT/PPTX
-def extractContentPpt(arquivo):
-    prs = Presentation(arquivo)
+# Function to extract text and images from PPT/PPTX files
+def extractContentPpt(file):
+    prs = Presentation(file)
     content = []
     for slide in prs.slides:
         for shape in slide.shapes:
             if hasattr(shape, "text"):
-                text = shape.text  # Adiciona o texto de cada slide ao conteúdo
+                text = shape.text  # Adds the text of each slide to the content
                 content.append(text)
             elif hasattr(shape, "image"):
-                image = shape.image.blob  # Adiciona as imagens ao conteúdo
+                image = shape.image.blob  # Adds images to the content
                 content.append(image)
     return content
 
-# Função para enviar imagem para ImgBB e obter a URL pública
+# Function to upload image to ImgBB and get the public URL
 def upload_image_to_imgbb(image_bytes):
-    imgbb_api_key = 'insira_aqui_a_sua_chave_imgbb'
+    imgbb_api_key = 'insert_your_imgbb_key_here'
     imgbb_url = 'https://api.imgbb.com/1/upload'
     image_base64 = base64.b64encode(image_bytes).decode('utf-8')
     payload = {
@@ -69,21 +69,21 @@ def upload_image_to_imgbb(image_bytes):
     imgbb_response = requests.post(imgbb_url, data=payload)
     if imgbb_response.status_code == 200:
         imgbb_data = imgbb_response.json()
-        public_image_url = imgbb_data['data']['url']  # URL pública da imagem
-        delete_url = imgbb_data['data']['delete_url']  # URL para deletar a imagem
+        public_image_url = imgbb_data['data']['url']  # Public URL of the image
+        delete_url = imgbb_data['data']['delete_url']  # URL to delete the image
         return public_image_url, delete_url
     return None, None
 
-# Função para descrever imagem usando OpenAI
+# Function to describe image using OpenAI
 def describe_image(image_url):
     response = client.chat.completions.create(
-        model="insira_aqui_a_implementação_do_modelo_da_openai",
+        model="insert_your_openai_model_implementation_here",
         messages=[
-            { "role": "system", "content": "Você é um excelente assistente para descrever imagens." },
+            { "role": "system", "content": "You are an excellent assistant for describing images." },
             { "role": "user", "content": [  
                 { 
                     "type": "text", 
-                    "text": "Descreva esta imagem:" 
+                    "text": "Describe this image:" 
                 },
                 { 
                     "type": "image_url",
@@ -94,32 +94,32 @@ def describe_image(image_url):
             ] } 
         ],
     )
-    return response.choices[0].message.content  # Retorna a descrição da imagem
+    return response.choices[0].message.content  # Returns the image description
 
-# Função para extrair e converter texto de arquivos TXT
-def extractTextTxts(arquivo):
+# Function to extract and convert text from TXT files
+def extractTextTxts(file):
     try:
-        texto = arquivo.read().decode("utf-8")
-        return unidecode(texto)  # Remove acentuações do texto
+        text = file.read().decode("utf-8")
+        return unidecode(text)  # Removes accents from the text
     except FileNotFoundError:
-        print(f"Erro: Arquivo não encontrado.")
+        print(f"Error: File not found.")
         return None
 
-# Inicializa a aplicação Flask
+# Initialize the Flask application
 app = Flask(__name__)
 
-# Rota para a página principal
+# Route for the main page
 @app.route('/')
 def index():
     print('Request for index page received')
     return render_template('index.html')
 
-# Rota para o favicon
+# Route for the favicon
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
-# Rota para processar o resultado da submissão do formulário
+# Route to process the form submission result
 @app.route('/result', methods=['POST'])
 def result():
     try:
@@ -130,7 +130,7 @@ def result():
             content = []
             image_base64 = None
 
-            # Extrai conteúdo baseado na extensão do arquivo
+            # Extract content based on file extension
             if ext == '.docx':
                 content = extractContentDocs(file)
             elif ext == '.pdf':
@@ -141,40 +141,40 @@ def result():
                 content = extractContentPpt(file)
             elif ext in ['.png', '.jpeg', '.jpg']:
                 image_bytes = file.read()
-                image_base64 = base64.b64encode(image_bytes).decode('utf-8') # Codifica a imagem em base64
+                image_base64 = base64.b64encode(image_bytes).decode('utf-8') # Encode the image in base64
                 public_image_url, delete_url = upload_image_to_imgbb(image_bytes)
                 if public_image_url:
-                    descricao = describe_image(public_image_url)
-                    content.append(descricao)
+                    description = describe_image(public_image_url)
+                    content.append(description)
                     requests.get(delete_url) 
 
             final_content = ""
-            # Concatena o conteúdo extraído em uma string final
+            # Concatenate the extracted content into a final string
             for item in content:
                 if isinstance(item, str):
                     final_content += item + "\n"
                 elif isinstance(item, bytes):
                     public_image_url, delete_url = upload_image_to_imgbb(item)
                     if public_image_url:
-                        descricao = describe_image(public_image_url)
-                        final_content += descricao + "\n"
+                        description = describe_image(public_image_url)
+                        final_content += description + "\n"
                         requests.get(delete_url) 
 
-            # Extrai o prompt do arquivo "prompts.txt" para a OpenAI
+            # Extract the prompt from the "prompts.txt" file for OpenAI
             prompt = extractTextTxts(open('prompts.txt', 'rb'))
             response = client.chat.completions.create(
-                model="insira_aqui_a_implementação_do_modelo_da_openai",
+                model="insert_your_openai_model_implementation_here",
                 messages=[
                     {"role": "system", "content": prompt},
                     {"role": "user", "content": final_content}
                 ],
-                max_tokens=1000 # Limite de tokens para a resposta
+                max_tokens=1000 # Token limit for the response
             )
             content = response.choices[0].message.content
-            content = content.replace('**', '') # Remove os marcadores de negrito
+            content = content.replace('**', '') # Remove bold markers
             
-            with open("output.txt", 'w', encoding='utf-8') as arquivo:
-                arquivo.write(content)
+            with open("output.txt", 'w', encoding='utf-8') as file:
+                file.write(content)
             return render_template('result.html', txt=content, image_base64=image_base64)
             
         print('Request for result page received with no file or unsupported file type -- redirecting')
@@ -182,18 +182,17 @@ def result():
 
     except Exception as e:
         # Log the exception
-        print(f"Erro: {e}")
-        # Renderiza a página result.html com a mensagem de erro
-        return render_template('result.html', txt="Ops... tivemos um problema e não foi possível analisar o documento. Por favor, tente novamente mais tarde", image_base64=None)
+        print(f"Error: {e}")
+        # Render the result.html page with the error message
+        return render_template('result.html', txt="Oops... we had a problem and could not analyze the document. Please try again later", image_base64=None)
 
-# Manipulador de erro para exceções não tratadas
+# Error handler for unhandled exceptions
 @app.errorhandler(Exception)
 def handle_exception(e):
-    # Você pode adicionar logging aqui se quiser
-    print(f"Erro: {e}")
-    # Renderiza a página result.html com a mensagem de erro
-    return render_template('result.html', txt="Ops... tivemos um problema e não foi possível analisar o documento. Por favor, tente novamente mais tarde", image_base64=None)
+    # You can add logging here if you want
+    print(f"Error: {e}")
+    # Render the result.html page with the error message
+    return render_template('result.html', txt="Oops... we had a problem and could not analyze the document. Please try again later", image_base64=None)
 
 if __name__ == '__main__':
     app.run()
-
